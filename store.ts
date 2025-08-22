@@ -1,7 +1,7 @@
 import {create} from 'zustand';
 import data from '@/data.json';
 
-interface Replies {
+export interface Replies {
     id: number;
     content: string;
     createdAt: string;
