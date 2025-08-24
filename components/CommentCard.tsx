@@ -3,12 +3,16 @@ import Counter from './Counter';
 import Button from './Button';
 import {Comment} from '../store';
 import ReplyCard from './ReplyCard';
+import {useState} from 'react';
+import CommentCardReplyField from './CommentCardReplyField';
 
 interface CommentProps {
     comment: Comment;
 }
 
 const CommentCard = ({comment}: CommentProps) => {
+    const [showCommentReplyField, setShowCommentReplyField] = useState(false);
+
     return (
         <div className="flex flex-col">
             <div className="relative flex flex-col-reverse lg:flex-row bg-(--clr-white) gap-y-(--sp-200) lg:gap-x-(--sp-300) p-(--sp-200) lg:p-(--sp-300) rounded-lg w-[21.4375rem] md:w-full lg:h-[10.4375rem]">
@@ -43,8 +47,20 @@ const CommentCard = ({comment}: CommentProps) => {
                     name="Reply"
                     variant="replyIcon"
                     withIcon
+                    onClick={() => {
+                        setShowCommentReplyField((prev) => !prev);
+                    }}
                 />
             </div>
+            {/* Reply Comment Field */}
+            {showCommentReplyField && (
+                <div className="mt-(--sp-200) md:mt-(--sp-300)">
+                    <CommentCardReplyField
+                        commentId={comment.id}
+                        setShowCommentReplyField={setShowCommentReplyField}
+                    />
+                </div>
+            )}
             {/* Replies */}
             <div
                 className={`flex flex-col gap-y-(--sp-200) md:gap-y-(--sp-300) border-l-2 border-(--clr-grey-100) pl-(--sp-200) md:pl-(--sp-500) md:ml-[2.87rem] ${
