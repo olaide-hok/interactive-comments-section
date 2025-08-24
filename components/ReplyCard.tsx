@@ -6,14 +6,16 @@ import Counter from './Counter';
 import Image from 'next/image';
 import ReplyCardReplyField from './ReplyCardReplyField';
 import {useState} from 'react';
+import DeleteCard from './DeleteCard';
 
 interface ReplyCardProps {
     commentId: number;
     reply: Replies;
 }
 const ReplyCard = ({commentId, reply}: ReplyCardProps) => {
-    const {user, toggleDeleteModal} = useCommentsStore();
+    const {user} = useCommentsStore();
     const [showReplyField, setShowReplyField] = useState(false);
+    const [showDeleteModal, setShowDeleteModal] = useState(false);
 
     return (
         <div className="flex flex-col gap-y-(--sp-200) md:gap-y-(--sp-300)">
@@ -63,7 +65,9 @@ const ReplyCard = ({commentId, reply}: ReplyCardProps) => {
                                 name="Delete"
                                 variant="deleteIcon"
                                 withIcon
-                                onClick={toggleDeleteModal}
+                                onClick={() => {
+                                    setShowDeleteModal((prev) => !prev);
+                                }}
                             />
                             <Button name="Edit" variant="editIcon" withIcon />
                         </>
@@ -86,6 +90,15 @@ const ReplyCard = ({commentId, reply}: ReplyCardProps) => {
                     commentId={commentId}
                     replyId={reply.id}
                     setShowReplyField={setShowReplyField}
+                />
+            )}
+
+            {/* Delete Card */}
+            {showDeleteModal && (
+                <DeleteCard
+                    commentId={commentId}
+                    replyId={reply.id}
+                    setShowDeleteModal={setShowDeleteModal}
                 />
             )}
         </div>
