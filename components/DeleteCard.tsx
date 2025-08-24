@@ -1,20 +1,26 @@
+import {useCommentsStore} from '@/store';
 import Button from './Button';
 
 const DeleteCard = () => {
+    const {toggleDeleteModal} = useCommentsStore();
     return (
-        <div className="flex flex-col bg-(--clr-white) gap-y-(--sp-300) p-8 rounded-lg w-[25rem]">
-            <h2 className="text-(--clr-grey-800) text(length:--fs-24) leading-(--lh-120)">
-                Delete comment
-            </h2>
-
-            <p className="text-(--clr-grey-500) text(length:--fs-16) leading-(--lh-150)">
-                Are you sure you want to delete this comment? This will remove
-                the comment and can’t be undone.
-            </p>
-
-            <div className="flex gap-x-(--sp-200)">
-                <Button name="No, Cancel" variant="noCancel" />
-                <Button name="Yes, Delete" variant="yesDelete" />
+        <div className="fixed inset-0 w-full h-full bg-(--clr-black)/50 flex items-center justify-center z-10 px-(--sp-200)">
+            <div className="flex flex-col bg-(--clr-white) gap-y-(--sp-200) md:gap-y-(--sp-300) p-(--sp-300) md:p-8 rounded-lg w-[21.4375rem] md:w-[25rem]">
+                <h2 className="text-(--clr-grey-800) text-(length:--fs-24) font-medium leading-(--lh-120)">
+                    Delete comment
+                </h2>
+                <p className="text-(--clr-grey-500) text(length:--fs-16) leading-(--lh-150)">
+                    Are you sure you want to delete this comment? This will
+                    remove the comment and can&apos;t be undone.
+                </p>
+                <div className="flex gap-x-(--sp-200)">
+                    <Button
+                        name="No, Cancel"
+                        variant="noCancel"
+                        onClick={toggleDeleteModal}
+                    />
+                    <Button name="Yes, Delete" variant="yesDelete" />
+                </div>
             </div>
         </div>
     );
