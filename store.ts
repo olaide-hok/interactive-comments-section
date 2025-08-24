@@ -50,6 +50,7 @@ interface CommentStoreSate {
     toggleDeleteModal: () => void;
     createComment: (commentText: string) => void;
     replyComment: (commentId: number, commentText: string) => void;
+    replyReply: (commentId: number, replyId: number, replyText: string) => void;
 }
 
 export const useCommentsStore = create<CommentStoreSate>((set, get) => ({
@@ -103,6 +104,38 @@ export const useCommentsStore = create<CommentStoreSate>((set, get) => ({
                         : c
                 ),
             }));
+        }
+    },
+
+    // reply replies
+    replyReply: (commentId, replyId, replyText) => {
+        const {comments} = get();
+        const comment = comments.find((comment) => comment.id === commentId);
+        if (comment) {
+            const reply = comment.replies.find((reply) => reply.id === replyId);
+            if (reply) {
+                const newReply = {
+                    id: parseInt(Math.random().toPrecision(2)),
+                    content: replyText,
+                    createdAt: timeAgo(new Date().toISOString()),
+                    score: 0,
+                    replyingTo: reply.user.username,
+                    user: get().user,
+                };
+
+                set((state) => ({
+                    ...state,
+                    comments: state.comments.map((c) => {
+                        if (c.id === commentId) {
+                            return {
+                                ...c,
+                                replies: [...c.replies, newReply],
+                            };
+                        }
+                        return c;
+                    }),
+                }));
+            }
         }
     },
 }));
