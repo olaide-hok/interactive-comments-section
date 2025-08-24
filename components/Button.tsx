@@ -70,7 +70,7 @@ const Button = ({
     return (
         <button
             className={cn(
-                `${variants[variant]} ${className} uppercase rounded-lg cursor-pointer`
+                `${variants[variant]} ${className} uppercase rounded-lg outline-none cursor-pointer`
             )}
             {...props}>
             {name}
