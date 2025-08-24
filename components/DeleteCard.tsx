@@ -1,8 +1,26 @@
 import {useCommentsStore} from '@/store';
 import Button from './Button';
 
-const DeleteCard = () => {
-    const {toggleDeleteModal} = useCommentsStore();
+interface DeleteCardProps {
+    commentId: number;
+    replyId: number;
+    setShowDeleteModal: React.Dispatch<React.SetStateAction<boolean>>;
+}
+
+const DeleteCard = ({
+    commentId,
+    replyId,
+    setShowDeleteModal,
+}: DeleteCardProps) => {
+    const {deleteReply} = useCommentsStore();
+
+    const handleDelete = (commentId: number, replyId: number) => {
+        if (replyId) {
+            deleteReply(commentId, replyId);
+        }
+        setShowDeleteModal(false);
+    };
+
     return (
         <div className="fixed inset-0 w-full h-full bg-(--clr-black)/50 flex items-center justify-center z-10 px-(--sp-200)">
             <div className="flex flex-col bg-(--clr-white) gap-y-(--sp-200) md:gap-y-(--sp-300) p-(--sp-300) md:p-8 rounded-lg w-[21.4375rem] md:w-[25rem]">
@@ -17,9 +35,13 @@ const DeleteCard = () => {
                     <Button
                         name="No, Cancel"
                         variant="noCancel"
-                        onClick={toggleDeleteModal}
+                        onClick={() => setShowDeleteModal(false)}
                     />
-                    <Button name="Yes, Delete" variant="yesDelete" />
+                    <Button
+                        name="Yes, Delete"
+                        variant="yesDelete"
+                        onClick={() => handleDelete(commentId, replyId)}
+                    />
                 </div>
             </div>
         </div>
