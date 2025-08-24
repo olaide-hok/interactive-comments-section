@@ -45,9 +45,20 @@ interface Comments {
 interface CommentStoreSate {
     user: Comments['currentUser'];
     comments: Comment[];
+    deleteModalOpen: boolean;
+    toggleDeleteModal: () => void;
 }
 
 export const useCommentsStore = create<CommentStoreSate>((set, get) => ({
     user: data.currentUser,
     comments: data.comments,
+    deleteModalOpen: false,
+    toggleDeleteModal: () => {
+        const {deleteModalOpen} = get();
+        // set state immutably
+        set((state) => ({
+            ...state,
+            deleteModalOpen: !deleteModalOpen,
+        }));
+    },
 }));
