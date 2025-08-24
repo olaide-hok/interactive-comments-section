@@ -2,11 +2,10 @@
 
 import CommentCard from '@/components/CommentCard';
 import CommentField from '@/components/CommentField';
-import DeleteCard from '@/components/DeleteCard';
 import {useCommentsStore} from '@/store';
 
 export default function Home() {
-    const {comments, deleteModalOpen} = useCommentsStore();
+    const {comments} = useCommentsStore();
 
     return (
         <div className="flex flex-col justify-self-center items-center justify-center py-[2rem] px-(--sp-200) lg:py-[3.62rem] lg:w-[90rem]">
@@ -17,8 +16,6 @@ export default function Home() {
             </div>
             {/* Comment Field */}
             <CommentField />
-            {/* Delete Card */}
-            {deleteModalOpen && <DeleteCard />}
         </div>
     );
 }
