@@ -1,5 +1,6 @@
 import {create} from 'zustand';
 import data from '@/data.json';
+import {timeAgo} from './utils';
 
 export interface Replies {
     id: number;
@@ -47,6 +48,8 @@ interface CommentStoreSate {
     comments: Comment[];
     deleteModalOpen: boolean;
     toggleDeleteModal: () => void;
+    createComment: (commentText: string) => void;
+    replyComment: (commentId: number, commentText: string) => void;
 }
 
 export const useCommentsStore = create<CommentStoreSate>((set, get) => ({
@@ -60,5 +63,46 @@ export const useCommentsStore = create<CommentStoreSate>((set, get) => ({
             ...state,
             deleteModalOpen: !deleteModalOpen,
         }));
+    },
+
+    createComment: (commentText) => {
+        const {comments, user} = get();
+        const newComment = {
+            id: comments.length + 1,
+            content: commentText,
+            createdAt: timeAgo(new Date().toISOString()),
+            score: 0,
+            user: user,
+            replies: [],
+        };
+
+        // set state immutably
+        set((state) => ({
+            ...state,
+            comments: [newComment, ...comments],
+        }));
+    },
+
+    replyComment: (commentId, commentText) => {
+        const {comments, user} = get();
+        const comment = comments.find((comment) => comment.id === commentId);
+        if (comment) {
+            const newReply = {
+                id: comment.replies.length + 1,
+                content: commentText,
+                createdAt: timeAgo(new Date().toISOString()),
+                score: 0,
+                replyingTo: comment.user.username,
+                user: user,
+            };
+            set((state) => ({
+                ...state,
+                comments: state.comments.map((c) =>
+                    c.id === commentId
+                        ? {...c, replies: [...c.replies, newReply]}
+                        : c
+                ),
+            }));
+        }
     },
 }));
