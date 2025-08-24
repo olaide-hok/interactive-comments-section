@@ -9,10 +9,10 @@ interface ReplyProps {
     reply: Replies;
 }
 const ReplyCard = ({reply}: ReplyProps) => {
-    const {user} = useCommentsStore();
+    const {user, toggleDeleteModal} = useCommentsStore();
 
     return (
-        <div className="relative flex flex-col-reverse lg:flex-row bg-(--clr-white) gap-y-(--sp-200) lg:gap-x-(--sp-300) p-(--sp-200) lg:p-(--sp-300) rounded-lg w-full h-auto lg:w-[45.625rem] lg:h-[10.4375rem]">
+        <div className="relative flex flex-col-reverse lg:flex-row bg-(--clr-white) gap-y-(--sp-200) lg:gap-x-(--sp-300) p-(--sp-200) lg:p-(--sp-300) rounded-lg w-[20.3rem] md:w-[40.1rem]">
             {/* Increment and decrement */}
             <Counter score={reply.score} />
             <div className="flex flex-col gap-y-(--sp-200)">
@@ -54,7 +54,12 @@ const ReplyCard = ({reply}: ReplyProps) => {
             <div className="flex items-center gap-x-(--sp-200) absolute bottom-6 md:bottom-unset sm:top-(--sp-200) right-(--sp-200) h-fit">
                 {user.username === reply.user.username ? (
                     <>
-                        <Button name="Delete" variant="deleteIcon" withIcon />
+                        <Button
+                            name="Delete"
+                            variant="deleteIcon"
+                            withIcon
+                            onClick={toggleDeleteModal}
+                        />
                         <Button name="Edit" variant="editIcon" withIcon />
                     </>
                 ) : (
