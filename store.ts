@@ -46,25 +46,17 @@ interface Comments {
 interface CommentStoreSate {
     user: Comments['currentUser'];
     comments: Comment[];
-    deleteModalOpen: boolean;
-    toggleDeleteModal: () => void;
+    // deleteModalOpen: boolean;
+    // toggleDeleteModal: () => void;
     createComment: (commentText: string) => void;
     replyComment: (commentId: number, commentText: string) => void;
     replyReply: (commentId: number, replyId: number, replyText: string) => void;
+    deleteReply: (commentId: number, replyId: number) => void;
 }
 
 export const useCommentsStore = create<CommentStoreSate>((set, get) => ({
     user: data.currentUser,
     comments: data.comments,
-    deleteModalOpen: false,
-    toggleDeleteModal: () => {
-        const {deleteModalOpen} = get();
-        // set state immutably
-        set((state) => ({
-            ...state,
-            deleteModalOpen: !deleteModalOpen,
-        }));
-    },
 
     createComment: (commentText) => {
         const {comments, user} = get();
@@ -130,6 +122,31 @@ export const useCommentsStore = create<CommentStoreSate>((set, get) => ({
                             return {
                                 ...c,
                                 replies: [...c.replies, newReply],
+                            };
+                        }
+                        return c;
+                    }),
+                }));
+            }
+        }
+    },
+
+    //  delete reply reply
+    deleteReply: (commentId, replyId) => {
+        const {comments} = get();
+        const comment = comments.find((comment) => comment.id === commentId);
+        if (comment) {
+            const reply = comment.replies.find((reply) => reply.id === replyId);
+            if (reply) {
+                set((state) => ({
+                    ...state,
+                    comments: state.comments.map((c) => {
+                        if (c.id === commentId) {
+                            return {
+                                ...c,
+                                replies: c.replies.filter(
+                                    (r) => r.id !== replyId
+                                ),
                             };
                         }
                         return c;
