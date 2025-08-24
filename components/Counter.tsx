@@ -18,7 +18,7 @@ const Counter = ({score}: CounterProps) => {
     };
 
     return (
-        <div className="flex lg:flex-col items-center justify-center bg-(--clr-grey-50) lg:py-(--sp-200) gap-(--sp-200) rounded-[0.625rem] w-[6.25rem] h-[2.5rem] lg:w-[2.5rem] lg:h-[6.25rem]">
+        <div className="flex lg:flex-col items-center justify-center bg-(--clr-grey-50) gap-(--sp-200) rounded-[0.625rem] w-[6.25rem] h-[2.5rem] lg:px-[0.31rem] lg:py-[0.835rem] lg:w-[2.5rem] lg:h-[6.25rem]">
             <button
                 type="button"
                 aria-label="Increment"
