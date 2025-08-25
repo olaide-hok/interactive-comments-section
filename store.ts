@@ -46,12 +46,15 @@ interface Comments {
 interface CommentStoreSate {
     user: Comments['currentUser'];
     comments: Comment[];
-    // deleteModalOpen: boolean;
-    // toggleDeleteModal: () => void;
     createComment: (commentText: string) => void;
     replyComment: (commentId: number, commentText: string) => void;
     replyReply: (commentId: number, replyId: number, replyText: string) => void;
     deleteReply: (commentId: number, replyId: number) => void;
+    updateReply: (
+        commentId: number,
+        replyId: number,
+        replyText: string
+    ) => void;
 }
 
 export const useCommentsStore = create<CommentStoreSate>((set, get) => ({
@@ -81,7 +84,7 @@ export const useCommentsStore = create<CommentStoreSate>((set, get) => ({
         const comment = comments.find((comment) => comment.id === commentId);
         if (comment) {
             const newReply = {
-                id: comment.replies.length + 1,
+                id: parseInt(Math.random().toFixed(2)),
                 content: commentText,
                 createdAt: timeAgo(new Date().toISOString()),
                 score: 0,
@@ -146,6 +149,33 @@ export const useCommentsStore = create<CommentStoreSate>((set, get) => ({
                                 ...c,
                                 replies: c.replies.filter(
                                     (r) => r.id !== replyId
+                                ),
+                            };
+                        }
+                        return c;
+                    }),
+                }));
+            }
+        }
+    },
+
+    // update reply
+    updateReply: (commentId, replyId, replyText) => {
+        const {comments} = get();
+        const comment = comments.find((comment) => comment.id === commentId);
+        if (comment) {
+            const reply = comment.replies.find((reply) => reply.id === replyId);
+            if (reply) {
+                set((state) => ({
+                    ...state,
+                    comments: state.comments.map((c) => {
+                        if (c.id === commentId) {
+                            return {
+                                ...c,
+                                replies: c.replies.map((r) =>
+                                    r.id === replyId
+                                        ? {...r, content: replyText}
+                                        : r
                                 ),
                             };
                         }
