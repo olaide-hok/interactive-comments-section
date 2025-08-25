@@ -35,7 +35,9 @@ const Button = ({
         return (
             <button
                 className={cn(
-                    `${variants[variant]} ${className} text-base font-medium cursor-pointer inline-flex items-center gap-(--sp-100)`
+                    `${variants[variant]} ${className} text-base font-medium ${
+                        props.disabled ? 'cursor-not-allowed' : 'cursor-pointer'
+                    } inline-flex items-center gap-(--sp-100)`
                 )}
                 {...props}>
                 {variant === 'replyIcon' && (
