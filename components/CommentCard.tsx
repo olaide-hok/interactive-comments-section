@@ -68,9 +68,9 @@ const CommentCard = ({comment}: CommentProps) => {
                     'my-(--sp-200) md:my-(--sp-300)'
                 } `}>
                 {comment.replies.length > 0 &&
-                    comment.replies.map((reply) => (
+                    comment.replies.map((reply, index) => (
                         <ReplyCard
-                            key={reply.id}
+                            key={reply.id + index}
                             reply={reply}
                             commentId={comment.id}
                         />
