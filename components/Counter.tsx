@@ -1,6 +1,7 @@
 'use client';
 
 import Image from 'next/image';
+import {useCommentsStore} from '@/store';
 
 interface CounterProps {
     score: number;
@@ -20,8 +21,13 @@ const Counter = ({
     decCommentScore,
     isOwner,
 }: CounterProps) => {
+    const {votes, user} = useCommentsStore();
+    const currentVote = votes[commentId]?.[user.username] ?? 0;
+
     const increment = () => {
         if (isOwner) return;
+
+        if (currentVote === 1) return;
 
         if (type === 'comment-card' && incCommentScore) {
             incCommentScore(commentId);
@@ -30,6 +36,8 @@ const Counter = ({
 
     const decrement = () => {
         if (isOwner) return;
+
+        if (currentVote === -1) return;
 
         if (type === 'comment-card' && decCommentScore) {
             decCommentScore(commentId);
@@ -42,8 +50,12 @@ const Counter = ({
                 type="button"
                 aria-label="Increment"
                 onClick={increment}
-                className={isOwner ? `cursor-not-allowed` : `cursor-pointer`}
-                disabled={isOwner}>
+                className={
+                    isOwner || currentVote === 1
+                        ? `cursor-not-allowed`
+                        : `cursor-pointer`
+                }
+                disabled={isOwner || currentVote === 1}>
                 <Image src="/icon-plus.svg" alt="plus" width={12} height={12} />
             </button>
             <span className="text-(--clr-purple-600) text-(length:--fs-16) font-medium leading-(--lh-150)">
@@ -54,11 +66,11 @@ const Counter = ({
                 aria-label="Decrement"
                 onClick={decrement}
                 className={
-                    score === 0 && isOwner
+                    score === 0 || isOwner || currentVote === -1
                         ? `cursor-not-allowed`
                         : `cursor-pointer`
                 }
-                disabled={score === 0 || isOwner}>
+                disabled={score === 0 || isOwner || currentVote === -1}>
                 <Image
                     src="/icon-minus.svg"
                     alt="minus"
