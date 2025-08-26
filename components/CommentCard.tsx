@@ -8,16 +8,26 @@ import CommentCardReplyField from './CommentCardReplyField';
 
 interface CommentProps {
     comment: Comment;
+    incScore: (commentId: number) => void;
+    decScore: (commentId: number) => void;
+    user: string;
 }
 
-const CommentCard = ({comment}: CommentProps) => {
+const CommentCard = ({comment, incScore, decScore, user}: CommentProps) => {
     const [showCommentReplyField, setShowCommentReplyField] = useState(false);
 
     return (
         <div className="flex flex-col">
             <div className="relative flex flex-col-reverse lg:flex-row bg-(--clr-white) gap-y-(--sp-200) lg:gap-x-(--sp-300) p-(--sp-200) lg:p-(--sp-300) rounded-lg w-[21.4375rem] md:w-full lg:h-[10.4375rem]">
                 {/* Increment and decrement */}
-                <Counter score={comment.score} />
+                <Counter
+                    score={comment.score}
+                    type="comment-card"
+                    commentId={comment.id}
+                    incCommentScore={incScore}
+                    decCommentScore={decScore}
+                    isOwner={comment.user.username === user}
+                />
                 <div className="flex flex-col gap-y-(--sp-200)">
                     {/* avatar, name, date and reply button */}
                     <div className="flex items-center gap-x-(--sp-200)">
