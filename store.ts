@@ -43,7 +43,13 @@ interface Comments {
     comments: Comment[];
 }
 
-interface CommentStoreSate {
+interface VoteRecord {
+    [commentId: number]: {
+        [username: string]: 1 | -1 | 0; // user can only vote +1 or -1
+    };
+}
+
+interface CommentStoreState {
     user: Comments['currentUser'];
     comments: Comment[];
     createComment: (commentText: string) => void;
@@ -55,11 +61,15 @@ interface CommentStoreSate {
         replyId: number,
         replyText: string
     ) => void;
+    votes: VoteRecord;
+    incCommentScore: (commentId: number) => void;
+    decCommentScore: (commentId: number) => void;
 }
 
-export const useCommentsStore = create<CommentStoreSate>((set, get) => ({
+export const useCommentsStore = create<CommentStoreState>((set, get) => ({
     user: data.currentUser,
     comments: data.comments,
+    votes: {} as VoteRecord, // keep track of votes
 
     createComment: (commentText) => {
         const {comments, user} = get();
@@ -184,5 +194,79 @@ export const useCommentsStore = create<CommentStoreSate>((set, get) => ({
                 }));
             }
         }
+    },
+
+    // increase comment score by one
+    incCommentScore: (commentId: number) => {
+        const {user, votes} = get();
+        const username = user.username;
+
+        const currentVote = votes[commentId]?.[username] ?? 0;
+        let newVote: 1 | 0 = 1;
+        let scoreDelta = 0;
+
+        if (currentVote === 1) {
+            // already upvoted → remove vote
+            newVote = 0;
+            scoreDelta = -1;
+        } else if (currentVote === 0) {
+            // no vote → add upvote
+            newVote = 1;
+            scoreDelta = 1;
+        } else if (currentVote === -1) {
+            // was downvoted → neutralize first
+            newVote = 0;
+            scoreDelta = 1;
+        }
+
+        set((state) => ({
+            comments: state.comments.map((c) =>
+                c.id === commentId ? {...c, score: c.score + scoreDelta} : c
+            ),
+            votes: {
+                ...state.votes,
+                [commentId]: {
+                    ...state.votes[commentId],
+                    [username]: newVote,
+                },
+            },
+        }));
+    },
+
+    // decrease comment score by one
+    decCommentScore: (commentId: number) => {
+        const {user, votes} = get();
+        const username = user.username;
+
+        const currentVote = votes[commentId]?.[username] ?? 0;
+        let newVote: -1 | 0 = -1;
+        let scoreDelta = 0;
+
+        if (currentVote === -1) {
+            // already downvoted → remove vote
+            newVote = 0;
+            scoreDelta = 1;
+        } else if (currentVote === 0) {
+            // no vote → add downvote
+            newVote = -1;
+            scoreDelta = -1;
+        } else if (currentVote === 1) {
+            // was upvoted → neutralize first
+            newVote = 0;
+            scoreDelta = -1;
+        }
+
+        set((state) => ({
+            comments: state.comments.map((c) =>
+                c.id === commentId ? {...c, score: c.score + scoreDelta} : c
+            ),
+            votes: {
+                ...state.votes,
+                [commentId]: {
+                    ...state.votes[commentId],
+                    [username]: newVote,
+                },
+            },
+        }));
     },
 }));
