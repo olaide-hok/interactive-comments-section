@@ -1,20 +1,39 @@
 'use client';
+
 import Image from 'next/image';
-import {useState} from 'react';
 
 interface CounterProps {
     score: number;
+    type: 'comment-card' | 'reply-card';
+    commentId: number;
+    replyId?: number;
+    incCommentScore?: (commentId: number) => void;
+    decCommentScore?: (commentId: number) => void;
+    isOwner: boolean;
 }
 
-const Counter = ({score}: CounterProps) => {
-    const [count, setCount] = useState(score);
-
+const Counter = ({
+    score,
+    type,
+    commentId,
+    incCommentScore,
+    decCommentScore,
+    isOwner,
+}: CounterProps) => {
     const increment = () => {
-        setCount(count + 1);
+        if (isOwner) return;
+
+        if (type === 'comment-card' && incCommentScore) {
+            incCommentScore(commentId);
+        }
     };
 
     const decrement = () => {
-        setCount(count - 1);
+        if (isOwner) return;
+
+        if (type === 'comment-card' && decCommentScore) {
+            decCommentScore(commentId);
+        }
     };
 
     return (
@@ -23,17 +42,23 @@ const Counter = ({score}: CounterProps) => {
                 type="button"
                 aria-label="Increment"
                 onClick={increment}
-                className="cursor-pointer">
+                className={isOwner ? `cursor-not-allowed` : `cursor-pointer`}
+                disabled={isOwner}>
                 <Image src="/icon-plus.svg" alt="plus" width={12} height={12} />
             </button>
             <span className="text-(--clr-purple-600) text-(length:--fs-16) font-medium leading-(--lh-150)">
-                {count}
+                {score}
             </span>
             <button
                 type="button"
                 aria-label="Decrement"
                 onClick={decrement}
-                className="cursor-pointer">
+                className={
+                    score === 0 && isOwner
+                        ? `cursor-not-allowed`
+                        : `cursor-pointer`
+                }
+                disabled={score === 0 || isOwner}>
                 <Image
                     src="/icon-minus.svg"
                     alt="minus"
