@@ -10,6 +10,8 @@ interface CounterProps {
     replyId?: number;
     incCommentScore?: (commentId: number) => void;
     decCommentScore?: (commentId: number) => void;
+    incReplyScore?: (commentId: number, replyId: number) => void;
+    decReplyScore?: (commentId: number, replyId: number) => void;
     isOwner: boolean;
 }
 
@@ -19,28 +21,40 @@ const Counter = ({
     commentId,
     incCommentScore,
     decCommentScore,
+    incReplyScore,
+    decReplyScore,
+    replyId,
     isOwner,
 }: CounterProps) => {
     const {votes, user} = useCommentsStore();
-    const currentVote = votes[commentId]?.[user.username] ?? 0;
+    const currentCommentVote = votes[commentId]?.[user.username] ?? 0;
+    const currentReplyVote = votes[replyId!]?.[user.username] ?? 0;
 
     const increment = () => {
         if (isOwner) return;
 
-        if (currentVote === 1) return;
+        if (currentCommentVote === 1) return;
 
         if (type === 'comment-card' && incCommentScore) {
             incCommentScore(commentId);
+        }
+
+        if (type === 'reply-card' && incReplyScore && replyId) {
+            incReplyScore(commentId, replyId);
         }
     };
 
     const decrement = () => {
         if (isOwner) return;
 
-        if (currentVote === -1) return;
+        if (currentCommentVote === -1) return;
 
         if (type === 'comment-card' && decCommentScore) {
             decCommentScore(commentId);
+        }
+
+        if (type === 'reply-card' && decReplyScore && replyId) {
+            decReplyScore(commentId, replyId);
         }
     };
 
@@ -51,11 +65,17 @@ const Counter = ({
                 aria-label="Increment"
                 onClick={increment}
                 className={
-                    isOwner || currentVote === 1
+                    isOwner ||
+                    currentCommentVote === 1 ||
+                    currentReplyVote === 1
                         ? `cursor-not-allowed`
                         : `cursor-pointer`
                 }
-                disabled={isOwner || currentVote === 1}>
+                disabled={
+                    isOwner ||
+                    currentCommentVote === 1 ||
+                    currentReplyVote === 1
+                }>
                 <Image src="/icon-plus.svg" alt="plus" width={12} height={12} />
             </button>
             <span className="text-(--clr-purple-600) text-(length:--fs-16) font-medium leading-(--lh-150)">
@@ -66,11 +86,19 @@ const Counter = ({
                 aria-label="Decrement"
                 onClick={decrement}
                 className={
-                    score === 0 || isOwner || currentVote === -1
+                    score === 0 ||
+                    isOwner ||
+                    currentCommentVote === -1 ||
+                    currentReplyVote === -1
                         ? `cursor-not-allowed`
                         : `cursor-pointer`
                 }
-                disabled={score === 0 || isOwner || currentVote === -1}>
+                disabled={
+                    score === 0 ||
+                    isOwner ||
+                    currentCommentVote === -1 ||
+                    currentReplyVote === -1
+                }>
                 <Image
                     src="/icon-minus.svg"
                     alt="minus"
