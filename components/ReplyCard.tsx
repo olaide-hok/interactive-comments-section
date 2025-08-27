@@ -13,7 +13,8 @@ interface ReplyCardProps {
     reply: Replies;
 }
 const ReplyCard = ({commentId, reply}: ReplyCardProps) => {
-    const {user, updateReply} = useCommentsStore();
+    const {user, updateReply, incReplyScore, decReplyScore} =
+        useCommentsStore();
     const [showReplyField, setShowReplyField] = useState(false);
     const [showDeleteModal, setShowDeleteModal] = useState(false);
 
@@ -35,7 +36,15 @@ const ReplyCard = ({commentId, reply}: ReplyCardProps) => {
         <div className="flex flex-col gap-y-(--sp-200) md:gap-y-(--sp-300)">
             <div className="relative flex flex-col-reverse lg:flex-row bg-(--clr-white) gap-y-(--sp-200) lg:gap-x-(--sp-300) p-(--sp-200) lg:p-(--sp-300) rounded-lg w-[20.3rem] md:w-[40.1rem]">
                 {/* Increment and decrement */}
-                <Counter score={reply.score} />
+                <Counter
+                    score={reply.score}
+                    type="reply-card"
+                    commentId={commentId}
+                    replyId={reply.id}
+                    incReplyScore={incReplyScore}
+                    decReplyScore={decReplyScore}
+                    isOwner={reply.user.username === user.username}
+                />
                 <div className="flex flex-col gap-y-(--sp-200)">
                     {/* avatar, name, date and reply button */}
                     <div className="flex items-center gap-x-(--sp-200)">
