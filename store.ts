@@ -44,9 +44,7 @@ interface Comments {
 }
 
 interface VoteRecord {
-    [commentId: number]: {
-        [username: string]: 1 | -1 | 0; // user can only vote +1 or -1
-    };
+    [key: string]: {[username: string]: 1 | -1 | 0};
 }
 
 interface CommentStoreState {
@@ -64,6 +62,8 @@ interface CommentStoreState {
     votes: VoteRecord;
     incCommentScore: (commentId: number) => void;
     decCommentScore: (commentId: number) => void;
+    incReplyScore: (commentId: number, replyId: number) => void;
+    decReplyScore: (commentId: number, replyId: number) => void;
 }
 
 export const useCommentsStore = create<CommentStoreState>((set, get) => ({
@@ -94,7 +94,7 @@ export const useCommentsStore = create<CommentStoreState>((set, get) => ({
         const comment = comments.find((comment) => comment.id === commentId);
         if (comment) {
             const newReply = {
-                id: parseInt(Math.random().toFixed(2)),
+                id: Date.now(),
                 content: commentText,
                 createdAt: timeAgo(new Date().toISOString()),
                 score: 0,
@@ -120,7 +120,7 @@ export const useCommentsStore = create<CommentStoreState>((set, get) => ({
             const reply = comment.replies.find((reply) => reply.id === replyId);
             if (reply) {
                 const newReply = {
-                    id: parseInt(Math.random().toPrecision(2)),
+                    id: Date.now(),
                     content: replyText,
                     createdAt: timeAgo(new Date().toISOString()),
                     score: 0,
@@ -266,6 +266,86 @@ export const useCommentsStore = create<CommentStoreState>((set, get) => ({
                     ...state.votes[commentId],
                     [username]: newVote,
                 },
+            },
+        }));
+    },
+
+    // increase reply score by one
+    incReplyScore: (commentId: number, replyId: number) => {
+        const {user, votes} = get();
+        const username = user.username;
+
+        const currentVote = votes[replyId]?.[username] ?? 0;
+        let newVote: 1 | 0 = 1;
+        let scoreDelta = 0;
+
+        if (currentVote === 1) {
+            newVote = 0;
+            scoreDelta = -1;
+        } else if (currentVote === 0) {
+            newVote = 1;
+            scoreDelta = 1;
+        } else if (currentVote === -1) {
+            newVote = 0;
+            scoreDelta = 1;
+        }
+
+        set((state) => ({
+            comments: state.comments.map((c) =>
+                c.id === commentId
+                    ? {
+                          ...c,
+                          replies: c.replies.map((r) =>
+                              r.id === replyId
+                                  ? {...r, score: r.score + scoreDelta}
+                                  : r
+                          ),
+                      }
+                    : c
+            ),
+            votes: {
+                ...state.votes,
+                [replyId]: {...state.votes[replyId], [username]: newVote},
+            },
+        }));
+    },
+
+    // decrease reply score by one
+    decReplyScore: (commentId: number, replyId: number) => {
+        const {user, votes} = get();
+        const username = user.username;
+
+        const currentVote = votes[replyId]?.[username] ?? 0;
+        let newVote: -1 | 0 = -1;
+        let scoreDelta = 0;
+
+        if (currentVote === -1) {
+            newVote = 0;
+            scoreDelta = 1;
+        } else if (currentVote === 0) {
+            newVote = -1;
+            scoreDelta = -1;
+        } else if (currentVote === 1) {
+            newVote = 0;
+            scoreDelta = -1;
+        }
+
+        set((state) => ({
+            comments: state.comments.map((c) =>
+                c.id === commentId
+                    ? {
+                          ...c,
+                          replies: c.replies.map((r) =>
+                              r.id === replyId
+                                  ? {...r, score: r.score + scoreDelta}
+                                  : r
+                          ),
+                      }
+                    : c
+            ),
+            votes: {
+                ...state.votes,
+                [replyId]: {...state.votes[replyId], [username]: newVote},
             },
         }));
     },
