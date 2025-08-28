@@ -1,7 +1,7 @@
 'use client';
 
-import Image from 'next/image';
 import {useCommentsStore} from '@/store';
+import {Icons} from './Icons';
 
 interface CounterProps {
     score: number;
@@ -76,7 +76,7 @@ const Counter = ({
                     currentCommentVote === 1 ||
                     currentReplyVote === 1
                 }>
-                <Image src="/icon-plus.svg" alt="plus" width={12} height={12} />
+                <Icons.plus className="fill-(--clr-purple-200) hover:fill-(--clr-purple-600)" />
             </button>
             <span className="text-(--clr-purple-600) text-(length:--fs-16) font-medium leading-(--lh-150)">
                 {score}
@@ -99,12 +99,7 @@ const Counter = ({
                     currentCommentVote === -1 ||
                     currentReplyVote === -1
                 }>
-                <Image
-                    src="/icon-minus.svg"
-                    alt="minus"
-                    width={12}
-                    height={12}
-                />
+                <Icons.minus className="fill-(--clr-purple-200) hover:fill-(--clr-purple-600)" />
             </button>
         </div>
     );
