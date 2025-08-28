@@ -1,5 +1,5 @@
 import {cn} from '@/utils';
-import Image from 'next/image';
+import {Icons} from './Icons';
 
 interface ButtonProps {
     name: string;
@@ -41,28 +41,13 @@ const Button = ({
                 )}
                 {...props}>
                 {variant === 'replyIcon' && (
-                    <Image
-                        src="/icon-reply.svg"
-                        alt="reply"
-                        width={14}
-                        height={12.25}
-                    />
+                    <Icons.reply className="fill-current" />
                 )}
                 {variant === 'deleteIcon' && (
-                    <Image
-                        src="/icon-delete.svg"
-                        alt="delete"
-                        width={11.667}
-                        height={14}
-                    />
+                    <Icons.delete className="fill-current" />
                 )}
                 {variant === 'editIcon' && (
-                    <Image
-                        src="/icon-edit.svg"
-                        alt="edit"
-                        width={14}
-                        height={13.95}
-                    />
+                    <Icons.edit className="fill-current" />
                 )}
                 {name}
             </button>
