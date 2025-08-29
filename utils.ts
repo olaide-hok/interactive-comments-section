@@ -14,10 +14,10 @@ export function cn(...inputs: ClassValue[]) {
  * @param dateString An ISO 8601 date string.
  * @returns A string that describes the given date string as a time period ago.
  */
-export function timeAgo(dateString: string) {
-    const date = new Date(dateString);
+export function timeAgo(input: Date | string): string {
+    const date = input instanceof Date ? input : new Date(input);
     const now = new Date();
-    const seconds = Math.floor((now.getTime() - date.getTime()) / 1000);
+    const seconds = Math.floor((now.getTime() - date?.getTime()) / 1000);
 
     const intervals: [number, string][] = [
         [60, 'second'],
