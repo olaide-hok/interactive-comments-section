@@ -5,6 +5,7 @@ import {Comment} from '../store';
 import ReplyCard from './ReplyCard';
 import {useState} from 'react';
 import CommentCardReplyField from './CommentCardReplyField';
+import {timeAgo} from '@/utils';
 
 interface CommentProps {
     comment: Comment;
@@ -43,7 +44,7 @@ const CommentCard = ({comment, incScore, decScore, user}: CommentProps) => {
                         </span>
 
                         <span className="text-(--clr-grey-500) text-(length:--fs-16) leading-(--lh-150) ">
-                            {comment.createdAt}
+                            {timeAgo(comment.createdAt)}
                         </span>
                     </div>
 
