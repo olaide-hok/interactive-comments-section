@@ -7,6 +7,7 @@ import Image from 'next/image';
 import ReplyCardReplyField from './ReplyCardReplyField';
 import {useState} from 'react';
 import DeleteCard from './DeleteCard';
+import {timeAgo} from '@/utils';
 
 interface ReplyCardProps {
     commentId: number;
@@ -69,7 +70,7 @@ const ReplyCard = ({commentId, reply}: ReplyCardProps) => {
                         </div>
 
                         <span className="text-(--clr-grey-500) text-(length:--fs-16) leading-(--lh-150) ">
-                            {reply.createdAt}
+                            {timeAgo(reply.createdAt)}
                         </span>
                     </div>
 
