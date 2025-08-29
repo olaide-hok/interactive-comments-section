@@ -228,7 +228,11 @@ export const useCommentsStore = create<CommentStoreState>()(
                                         ...c,
                                         replies: c.replies.map((r) =>
                                             r.id === replyId
-                                                ? {...r, content: replyText}
+                                                ? {
+                                                      ...r,
+                                                      content: replyText,
+                                                      createdAt: new Date(),
+                                                  }
                                                 : r
                                         ),
                                     };
