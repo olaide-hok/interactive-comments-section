@@ -23,8 +23,8 @@ Users should be able to:
 -   See hover states for all interactive elements on the page
 -   Create, Read, Update, and Delete comments and replies
 -   Upvote and downvote comments
--   **Bonus**: If you're building a purely front-end project, use `localStorage` to save the current state in the browser that persists when the browser is refreshed.
--   **Bonus**: Instead of using the `createdAt` strings from the `data.json` file, try using timestamps and dynamically track the time since the comment or reply was posted.
+-   `localStorage` to save the current state in the browser that persists when the browser is refreshed.
+-   Used the `createdAt` strings from the `data.json` file, with timestamps and dynamically track the time since the comment or reply was posted.
 
 ### Screenshot
 
@@ -41,8 +41,8 @@ Users should be able to:
 
 ### Links
 
--   Solution URL: [Link](https://github.com/olaide-hok/tip-calculator-app-with-tests)
--   Live Site URL: [Link](https://tip-calculator-app-with-unit-tests.netlify.app/)
+-   Solution URL: [Link](https://github.com/olaide-hok/interactive-comments-section)
+-   Live Site URL: [Link](https://interactive-comments-section-blond-theta.vercel.app/)
 
 ## My process
 
